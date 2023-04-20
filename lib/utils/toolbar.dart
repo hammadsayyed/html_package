@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:html_editor_enhanced/src/widgets/custom_icons.dart';
 
 /// Abstract class that all the toolbar classes extend
 abstract class Toolbar {
@@ -32,7 +33,7 @@ class FontButtons extends Toolbar {
   final bool bold;
   final bool italic;
   final bool underline;
-  final bool clearAll;
+  // final bool clearAll;
   final bool strikethrough;
   final bool superscript;
   final bool subscript;
@@ -41,7 +42,7 @@ class FontButtons extends Toolbar {
     this.bold = true,
     this.italic = true,
     this.underline = true,
-    this.clearAll = true,
+    // this.clearAll = true,
     this.strikethrough = true,
     this.superscript = true,
     this.subscript = true,
@@ -49,19 +50,29 @@ class FontButtons extends Toolbar {
 
   List<Icon> getIcons1() {
     var icons = <Icon>[];
-    if (bold) icons.add(Icon(Icons.format_bold));
-    if (italic) icons.add(Icon(Icons.format_italic));
-    if (underline) icons.add(Icon(Icons.format_underline));
-    if (clearAll) icons.add(Icon(Icons.format_clear));
+    if (bold) icons.add(CustomIconWrapper(CustomIcons.bold));
+    if (italic) icons.add(CustomIconWrapper(CustomIcons.italic));
+    if (underline) icons.add(CustomIconWrapper(CustomIcons.underline));
+    if (strikethrough) icons.add(CustomIconWrapper(CustomIcons.strikethrough));
+    // if (clearAll) icons.add(CustomIconWrapper(CustomIcons.remove_formatting));
     return icons;
   }
 
   List<Icon> getIcons2() {
     var icons = <Icon>[];
-    if (strikethrough) icons.add(Icon(Icons.format_strikethrough));
+    // if (strikethrough) icons.add(CustomIconWrapper(CustomIcons.strikethrough));
     if (superscript) icons.add(Icon(Icons.superscript));
     if (subscript) icons.add(Icon(Icons.subscript));
     return icons;
+  }
+}
+
+class CustomIconWrapper extends Icon{
+  CustomIconWrapper(IconData? icon) : super(icon, size: 18);
+
+  @override
+  Widget build(BuildContext context) {
+    return super.build(context);
   }
 }
 
@@ -77,8 +88,8 @@ class ColorButtons extends Toolbar {
 
   List<Icon> getIcons() {
     var icons = <Icon>[];
-    if (foregroundColor) icons.add(Icon(Icons.format_color_text));
-    if (highlightColor) icons.add(Icon(Icons.format_color_fill));
+    if (foregroundColor) icons.add(CustomIconWrapper(CustomIcons.text_color));
+    if (highlightColor) icons.add(CustomIconWrapper(Icons.format_color_fill));
     return icons;
   }
 }
@@ -97,8 +108,8 @@ class ListButtons extends Toolbar {
 
   List<Icon> getIcons() {
     var icons = <Icon>[];
-    if (ul) icons.add(Icon(Icons.format_list_bulleted));
-    if (ol) icons.add(Icon(Icons.format_list_numbered));
+    if (ul) icons.add(CustomIconWrapper(CustomIcons.bulleted_list));
+    if (ol) icons.add(CustomIconWrapper(CustomIcons.numbered_list));
     return icons;
   }
 }
@@ -129,17 +140,17 @@ class ParagraphButtons extends Toolbar {
 
   List<Icon> getIcons1() {
     var icons = <Icon>[];
-    if (alignLeft) icons.add(Icon(Icons.format_align_left));
-    if (alignCenter) icons.add(Icon(Icons.format_align_center));
-    if (alignRight) icons.add(Icon(Icons.format_align_right));
+    if (alignLeft) icons.add(CustomIconWrapper(CustomIcons.ic_text_align_left));
+    if (alignCenter) icons.add(CustomIconWrapper(CustomIcons.ic_text_align_center));
+    if (alignRight) icons.add(CustomIconWrapper(CustomIcons.ic_text_align_right));
     if (alignJustify) icons.add(Icon(Icons.format_align_justify));
     return icons;
   }
 
   List<Icon> getIcons2() {
     var icons = <Icon>[];
-    if (increaseIndent) icons.add(Icon(Icons.format_indent_increase));
-    if (decreaseIndent) icons.add(Icon(Icons.format_indent_decrease));
+    if (increaseIndent) icons.add(CustomIconWrapper(CustomIcons.increase_indent));
+    if (decreaseIndent) icons.add(CustomIconWrapper(CustomIcons.decrease_indent));
     return icons;
   }
 }
@@ -153,6 +164,8 @@ class InsertButtons extends Toolbar {
   final bool otherFile;
   final bool table;
   final bool hr;
+  final bool codeview;
+  final bool clearAll;
 
   const InsertButtons({
     this.link = true,
@@ -162,17 +175,21 @@ class InsertButtons extends Toolbar {
     this.otherFile = false,
     this.table = true,
     this.hr = true,
+    this.codeview = true,
+    this.clearAll = true,
   });
 
   List<Icon> getIcons() {
     var icons = <Icon>[];
-    if (link) icons.add(Icon(Icons.link));
+    if (link) icons.add(CustomIconWrapper(CustomIcons.insert_link));
     if (picture) icons.add(Icon(Icons.image_outlined));
     if (audio) icons.add(Icon(Icons.audiotrack_outlined));
     if (video) icons.add(Icon(Icons.videocam_outlined));
-    if (otherFile) icons.add(Icon(Icons.attach_file));
-    if (table) icons.add(Icon(Icons.table_chart_outlined));
+    if (otherFile) icons.add(CustomIconWrapper(CustomIcons.attach_file));
+    if (table) icons.add(CustomIconWrapper(CustomIcons.table));
     if (hr) icons.add(Icon(Icons.horizontal_rule));
+    if (codeview) icons.add(CustomIconWrapper(CustomIcons.code));
+    if (clearAll) icons.add(CustomIconWrapper(CustomIcons.remove_formatting));
     return icons;
   }
 }
@@ -200,7 +217,7 @@ class OtherButtons extends Toolbar {
   List<Icon> getIcons1() {
     var icons = <Icon>[];
     if (fullscreen) icons.add(Icon(Icons.fullscreen));
-    if (codeview) icons.add(Icon(Icons.code));
+    if (codeview) icons.add(CustomIconWrapper(CustomIcons.code));
     if (undo) icons.add(Icon(Icons.undo));
     if (redo) icons.add(Icon(Icons.redo));
     if (help) icons.add(Icon(Icons.help_outline));

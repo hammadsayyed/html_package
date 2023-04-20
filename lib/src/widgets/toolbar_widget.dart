@@ -10,6 +10,8 @@ import 'package:html_editor_enhanced/utils/utils.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
 
+import 'custom_icons.dart';
+
 /// Toolbar widget class
 class ToolbarWidget extends StatefulWidget {
   /// The [HtmlEditorController] is mainly used to call the [execCommand] method
@@ -38,7 +40,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
 
   /// List that controls which [ToggleButtons] are selected for
   /// strikthrough/superscript/subscript
-  List<bool> _miscFontSelected = List<bool>.filled(3, false);
+  List<bool> _miscFontSelected = List<bool>.filled(2, false);
 
   /// List that controls which [ToggleButtons] are selected for
   /// forecolor/backcolor
@@ -52,6 +54,10 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
   /// fullscreen, codeview, undo, redo, and help. Fullscreen and codeview
   /// are the only buttons that will ever be selected.
   List<bool> _miscSelected = List<bool>.filled(5, false);
+
+  /// List that controls which [ToggleButtons] are selected for
+  /// codeview is the only button that will ever be selected in InsertButtons.
+  List<bool> _miscInsertSelectableSelected = List<bool>.filled(9, false);
 
   /// List that controls which [ToggleButtons] are selected for
   /// justify left/right/center/full.
@@ -108,6 +114,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
       }
       if (t is OtherButtons) {
         _miscSelected = List<bool>.filled(t.getIcons1().length, false);
+      }
+      if (t is InsertButtons) {
+        _miscInsertSelectableSelected = List<bool>.filled(t.getIcons().length, false);
       }
       if (t is ParagraphButtons) {
         _alignSelected = List<bool>.filled(t.getIcons1().length, false);
@@ -252,47 +261,50 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
       for (var t in widget.htmlToolbarOptions.defaultToolbarButtons) {
         if (t is FontButtons) {
           for (var i = 0; i < _fontSelected.length; i++) {
-            if (t.getIcons1()[i].icon == Icons.format_bold) {
+            if (t.getIcons1()[i].icon == CustomIcons.bold) {
               _fontSelected[i] = fontList[0] ?? false;
             }
-            if (t.getIcons1()[i].icon == Icons.format_italic) {
+            if (t.getIcons1()[i].icon == CustomIcons.italic) {
               _fontSelected[i] = fontList[1] ?? false;
             }
-            if (t.getIcons1()[i].icon == Icons.format_underline) {
+            if (t.getIcons1()[i].icon == CustomIcons.underline) {
               _fontSelected[i] = fontList[2] ?? false;
+            }
+            if (t.getIcons1()[i].icon == CustomIcons.strikethrough) {
+              _fontSelected[i] = fontList[3] ?? false;
             }
           }
           for (var i = 0; i < _miscFontSelected.length; i++) {
-            if (t.getIcons2()[i].icon == Icons.format_strikethrough) {
+            // if (t.getIcons2()[i].icon == CustomIcons.strikethrough) {
+            //   _miscFontSelected[i] = miscFontList[0] ?? false;
+            // }
+            if (t.getIcons2()[i].icon == Icons.superscript) {
               _miscFontSelected[i] = miscFontList[0] ?? false;
             }
-            if (t.getIcons2()[i].icon == Icons.superscript) {
-              _miscFontSelected[i] = miscFontList[1] ?? false;
-            }
             if (t.getIcons2()[i].icon == Icons.subscript) {
-              _miscFontSelected[i] = miscFontList[2] ?? false;
+              _miscFontSelected[i] = miscFontList[1] ?? false;
             }
           }
         }
         if (t is ListButtons) {
           for (var i = 0; i < _listSelected.length; i++) {
-            if (t.getIcons()[i].icon == Icons.format_list_bulleted) {
+            if (t.getIcons()[i].icon == CustomIcons.bulleted_list) {
               _listSelected[i] = paragraphList[0] ?? false;
             }
-            if (t.getIcons()[i].icon == Icons.format_list_numbered) {
+            if (t.getIcons()[i].icon == CustomIcons.numbered_list) {
               _listSelected[i] = paragraphList[1] ?? false;
             }
           }
         }
         if (t is ParagraphButtons) {
           for (var i = 0; i < _alignSelected.length; i++) {
-            if (t.getIcons1()[i].icon == Icons.format_align_left) {
+            if (t.getIcons1()[i].icon == CustomIcons.ic_text_align_left) {
               _alignSelected[i] = alignList[0] ?? false;
             }
-            if (t.getIcons1()[i].icon == Icons.format_align_center) {
+            if (t.getIcons1()[i].icon == CustomIcons.ic_text_align_center) {
               _alignSelected[i] = alignList[1] ?? false;
             }
-            if (t.getIcons1()[i].icon == Icons.format_align_right) {
+            if (t.getIcons1()[i].icon == CustomIcons.ic_text_align_right) {
               _alignSelected[i] = alignList[2] ?? false;
             }
             if (t.getIcons1()[i].icon == Icons.format_align_justify) {
@@ -311,8 +323,8 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           isItalic: fontList[1] ?? false,
           isUnderline: fontList[2] ?? false,
           isStrikethrough: miscFontList[0] ?? false,
-          isSuperscript: miscFontList[1] ?? false,
-          isSubscript: miscFontList[2] ?? false,
+          isSuperscript: miscFontList[0] ?? false,
+          isSubscript: miscFontList[1] ?? false,
           foregroundColor: _foreColorSelected,
           backgroundColor: _backColorSelected,
           isUl: paragraphList[0] ?? false,
@@ -335,7 +347,10 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           absorbing: !_enabled,
           child: Opacity(
             opacity: _enabled ? 1 : 0.5,
-            child: Padding(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+              ),
               padding: const EdgeInsets.all(5.0),
               child: Wrap(
                 runSpacing: widget.htmlToolbarOptions.gridViewVerticalSpacing,
@@ -346,7 +361,30 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           ),
         ),
       );
-    } else if (widget.htmlToolbarOptions.toolbarType ==
+    }else if(widget.htmlToolbarOptions.toolbarType ==
+        ToolbarType.nativeLinear){
+      return PointerInterceptor(
+        child: AbsorbPointer(
+          absorbing: !_enabled,
+          child: Opacity(
+            opacity: _enabled ? 1 : 0.5,
+            child: Container(
+              height: widget.htmlToolbarOptions.toolbarItemHeight + 15,
+              decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  children: _buildChildren(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    else if (widget.htmlToolbarOptions.toolbarType ==
         ToolbarType.nativeScrollable) {
       return PointerInterceptor(
         child: AbsorbPointer(
@@ -355,6 +393,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             opacity: _enabled ? 1 : 0.5,
             child: Container(
               height: widget.htmlToolbarOptions.toolbarItemHeight + 15,
+              decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: CustomScrollView(
@@ -382,6 +423,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           child: Opacity(
             opacity: _enabled ? 1 : 0.5,
             child: Container(
+              decoration: BoxDecoration(
+                  border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+              ),
               constraints: BoxConstraints(
                 maxHeight: _isExpanded
                     ? MediaQuery.of(context).size.height
@@ -889,15 +933,15 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
         }
       }
       if (t is FontButtons) {
-        if (t.bold || t.italic || t.underline || t.clearAll) {
+        if (t.bold || t.italic || t.underline || t.strikethrough) {
           toolbarChildren.add(ToggleButtons(
             constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
+              width: widget.htmlToolbarOptions.toolbarItemHeight + 8,
+              height: widget.htmlToolbarOptions.toolbarItemHeight,
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -916,7 +960,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 });
               }
 
-              if (t.getIcons1()[index].icon == Icons.format_bold) {
+              if (t.getIcons1()[index].icon == CustomIcons.bold) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.bold, _fontSelected[index],
                             updateStatus) ??
@@ -926,7 +970,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons1()[index].icon == Icons.format_italic) {
+              if (t.getIcons1()[index].icon == CustomIcons.italic) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.italic, _fontSelected[index],
                             updateStatus) ??
@@ -936,7 +980,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons1()[index].icon == Icons.format_underline) {
+              if (t.getIcons1()[index].icon == CustomIcons.underline) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.underline, _fontSelected[index],
                             updateStatus) ??
@@ -946,20 +990,34 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons1()[index].icon == Icons.format_clear) {
+              if (t.getIcons1()[index].icon == CustomIcons.strikethrough) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
-                        ?.call(ButtonType.clearFormatting, null, null) ??
-                    true;
+                    ?.call(ButtonType.strikethrough,  _fontSelected[index],
+                    updateStatus) ?? true;
                 if (proceed) {
-                  widget.controller.execCommand('removeFormat');
+                  widget.controller.execCommand('strikeThrough');
+                  updateStatus();
                 }
               }
+              // if (t.getIcons1()[index].icon == CustomIcons.remove_formatting) {
+              //   var proceed = await widget.htmlToolbarOptions.onButtonPressed
+              //           ?.call(ButtonType.clearFormatting, null, null) ??
+              //       true;
+              //   if (proceed) {
+              //     widget.controller.execCommand('removeFormat');
+              //   }
+              // }
             },
             isSelected: _fontSelected,
-            children: t.getIcons1(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+              ? t.getIcons1()
+              : t.getIcons1().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(_fontSelected[index], icon)
+            )).values.toList(),
           ));
         }
-        if (t.strikethrough || t.superscript || t.subscript) {
+        if (t.superscript || t.subscript) {
           toolbarChildren.add(ToggleButtons(
             constraints: BoxConstraints.tightFor(
               width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
@@ -967,7 +1025,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -986,16 +1044,6 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 });
               }
 
-              if (t.getIcons2()[index].icon == Icons.format_strikethrough) {
-                var proceed = await widget.htmlToolbarOptions.onButtonPressed
-                        ?.call(ButtonType.strikethrough,
-                            _miscFontSelected[index], updateStatus) ??
-                    true;
-                if (proceed) {
-                  widget.controller.execCommand('strikeThrough');
-                  updateStatus();
-                }
-              }
               if (t.getIcons2()[index].icon == Icons.superscript) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.superscript, _miscFontSelected[index],
@@ -1018,7 +1066,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             },
             isSelected: _miscFontSelected,
-            children: t.getIcons2(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+                ? t.getIcons2()
+                : t.getIcons2().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(_miscFontSelected[index], icon)
+                )).values.toList(),
           ));
         }
       }
@@ -1030,7 +1083,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           ),
           color: widget.htmlToolbarOptions.buttonColor,
           selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-          fillColor: widget.htmlToolbarOptions.buttonFillColor,
+          fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
           focusColor: widget.htmlToolbarOptions.buttonFocusColor,
           highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
           hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -1047,7 +1100,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               setState(mounted, this.setState, () {
                 _colorSelected[index] = !_colorSelected[index];
                 if (color != null &&
-                    t.getIcons()[index].icon == Icons.format_color_text) {
+                    t.getIcons()[index].icon == CustomIcons.text_color) {
                   _foreColorSelected = color;
                 }
                 if (color != null &&
@@ -1058,7 +1111,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             }
 
             if (_colorSelected[index]) {
-              if (t.getIcons()[index].icon == Icons.format_color_text) {
+              if (t.getIcons()[index].icon == CustomIcons.text_color) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.foregroundColor,
                             _colorSelected[index], updateStatus) ??
@@ -1088,7 +1141,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             } else {
               var proceed = true;
-              if (t.getIcons()[index].icon == Icons.format_color_text) {
+              if (t.getIcons()[index].icon == CustomIcons.text_color) {
                 proceed = await widget.htmlToolbarOptions.onButtonPressed?.call(
                         ButtonType.foregroundColor,
                         _colorSelected[index],
@@ -1103,7 +1156,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
               if (proceed) {
                 late Color newColor;
-                if (t.getIcons()[index].icon == Icons.format_color_text) {
+                if (t.getIcons()[index].icon == CustomIcons.text_color) {
                   newColor = _foreColorSelected;
                 } else {
                   newColor = _backColorSelected;
@@ -1151,7 +1204,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                             TextButton(
                                 onPressed: () {
                                   if (t.getIcons()[index].icon ==
-                                      Icons.format_color_text) {
+                                      CustomIcons.text_color) {
                                     setState(mounted, this.setState, () {
                                       _foreColorSelected = Colors.black;
                                     });
@@ -1178,7 +1231,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                             TextButton(
                               onPressed: () {
                                 if (t.getIcons()[index].icon ==
-                                    Icons.format_color_text) {
+                                    CustomIcons.text_color) {
                                   widget.controller.execCommand('foreColor',
                                       argument: (newColor.value & 0xFFFFFF)
                                           .toRadixString(16)
@@ -1215,7 +1268,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             }
           },
           isSelected: _colorSelected,
-          children: t.getIcons(),
+          children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+              ? t.getIcons()
+              : t.getIcons().asMap().map((index, icon) =>
+              MapEntry(index,
+                  _buildCustomizeStyleButton(_colorSelected[index], icon)
+              )).values.toList(),
         ));
       }
       if (t is ListButtons) {
@@ -1227,7 +1285,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -1246,7 +1304,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 });
               }
 
-              if (t.getIcons()[index].icon == Icons.format_list_bulleted) {
+              if (t.getIcons()[index].icon == CustomIcons.bulleted_list) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.ul, _listSelected[index],
                             updateStatus) ??
@@ -1256,7 +1314,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons()[index].icon == Icons.format_list_numbered) {
+              if (t.getIcons()[index].icon == CustomIcons.numbered_list) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.ol, _listSelected[index],
                             updateStatus) ??
@@ -1268,7 +1326,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             },
             isSelected: _listSelected,
-            children: t.getIcons(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+                ? t.getIcons()
+                : t.getIcons().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(_listSelected[index], icon)
+                )).values.toList(),
           ));
         }
         if (t.listStyles) {
@@ -1386,7 +1449,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -1406,7 +1469,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 });
               }
 
-              if (t.getIcons1()[index].icon == Icons.format_align_left) {
+              if (t.getIcons1()[index].icon == CustomIcons.ic_text_align_left) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.alignLeft, _alignSelected[index],
                             updateStatus) ??
@@ -1416,7 +1479,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons1()[index].icon == Icons.format_align_center) {
+              if (t.getIcons1()[index].icon == CustomIcons.ic_text_align_center) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.alignCenter, _alignSelected[index],
                             updateStatus) ??
@@ -1426,7 +1489,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons1()[index].icon == Icons.format_align_right) {
+              if (t.getIcons1()[index].icon == CustomIcons.ic_text_align_right) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.alignRight, _alignSelected[index],
                             updateStatus) ??
@@ -1448,7 +1511,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             },
             isSelected: _alignSelected,
-            children: t.getIcons1(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+                ? t.getIcons1()
+                : t.getIcons1().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(_alignSelected[index], icon)
+                )).values.toList(),
           ));
         }
         if (t.increaseIndent || t.decreaseIndent) {
@@ -1459,7 +1527,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -1472,7 +1540,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             renderBorder: widget.htmlToolbarOptions.renderBorder,
             textStyle: widget.htmlToolbarOptions.textStyle,
             onPressed: (int index) async {
-              if (t.getIcons2()[index].icon == Icons.format_indent_increase) {
+              if (t.getIcons2()[index].icon == CustomIcons.increase_indent) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.increaseIndent, null, null) ??
                     true;
@@ -1480,7 +1548,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   widget.controller.execCommand('indent');
                 }
               }
-              if (t.getIcons2()[index].icon == Icons.format_indent_decrease) {
+              if (t.getIcons2()[index].icon == CustomIcons.decrease_indent) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.decreaseIndent, null, null) ??
                     true;
@@ -1490,7 +1558,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             },
             isSelected: List<bool>.filled(t.getIcons2().length, false),
-            children: t.getIcons2(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+                ? t.getIcons2()
+                : t.getIcons2().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(List<bool>.filled(t.getIcons2().length, false)[index], icon)
+                )).values.toList(),
           ));
         }
         if (t.lineHeight) {
@@ -1599,7 +1672,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -1758,7 +1831,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               t.picture ||
               t.link ||
               t.hr ||
-              t.table)) {
+              t.table ||
+              t.codeview ||
+              t.clearAll)) {
         toolbarChildren.add(ToggleButtons(
           constraints: BoxConstraints.tightFor(
             width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
@@ -1766,7 +1841,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           ),
           color: widget.htmlToolbarOptions.buttonColor,
           selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-          fillColor: widget.htmlToolbarOptions.buttonFillColor,
+          fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
           focusColor: widget.htmlToolbarOptions.buttonFocusColor,
           highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
           hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -1779,7 +1854,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           renderBorder: widget.htmlToolbarOptions.renderBorder,
           textStyle: widget.htmlToolbarOptions.textStyle,
           onPressed: (int index) async {
-            if (t.getIcons()[index].icon == Icons.link) {
+            void updateStatus() {
+              setState(mounted, this.setState, () {
+                _miscInsertSelectableSelected[index] = !_miscInsertSelectableSelected[index];
+              });
+            }
+            if (t.getIcons()[index].icon == CustomIcons.insert_link) {
               var proceed = await widget.htmlToolbarOptions.onButtonPressed
                       ?.call(ButtonType.link, null, null) ??
                   true;
@@ -2376,7 +2456,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     });
               }
             }
-            if (t.getIcons()[index].icon == Icons.attach_file) {
+            if (t.getIcons()[index].icon == CustomIcons.attach_file) {
               var proceed = await widget.htmlToolbarOptions.onButtonPressed
                       ?.call(ButtonType.otherFile, null, null) ??
                   true;
@@ -2511,7 +2591,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                     });
               }
             }
-            if (t.getIcons()[index].icon == Icons.table_chart_outlined) {
+            if (t.getIcons()[index].icon == CustomIcons.table) {
               var proceed = await widget.htmlToolbarOptions.onButtonPressed
                       ?.call(ButtonType.table, null, null) ??
                   true;
@@ -2585,9 +2665,34 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 widget.controller.insertHtml('<hr/>');
               }
             }
+            if (t.getIcons()[index].icon == CustomIcons.code) {
+              var proceed = await widget.htmlToolbarOptions.onButtonPressed
+                  ?.call(ButtonType.codeview, _miscInsertSelectableSelected[index],
+                  updateStatus) ??
+                  true;
+              if (proceed) {
+                widget.controller.toggleCodeView();
+                updateStatus();
+              }
+            }
+            if (t.getIcons()[index].icon == CustomIcons.remove_formatting) {
+              var proceed = await widget.htmlToolbarOptions.onButtonPressed
+                  ?.call(ButtonType.clearFormatting, null, null) ??
+                  true;
+              if (proceed) {
+                widget.controller.execCommand('removeFormat');
+              }
+            }
           },
-          isSelected: List<bool>.filled(t.getIcons().length, false),
-          children: t.getIcons(),
+          // isSelected: List<bool>.filled(t.getIcons().length, false),
+          isSelected: _miscInsertSelectableSelected,
+          children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+              ? t.getIcons()
+              : t.getIcons().asMap().map((index, icon) =>
+              MapEntry(index,
+                  // _buildCustomizeStyleButton(List<bool>.filled(t.getIcons().length, false)[index], icon)
+                  _buildCustomizeStyleButton(_miscInsertSelectableSelected[index], icon)
+              )).values.toList(),
         ));
       }
       if (t is OtherButtons) {
@@ -2599,7 +2704,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -2628,7 +2733,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                   updateStatus();
                 }
               }
-              if (t.getIcons1()[index].icon == Icons.code) {
+              if (t.getIcons1()[index].icon == CustomIcons.code) {
                 var proceed = await widget.htmlToolbarOptions.onButtonPressed
                         ?.call(ButtonType.codeview, _miscSelected[index],
                             updateStatus) ??
@@ -2901,7 +3006,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             },
             isSelected: _miscSelected,
-            children: t.getIcons1(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+                ? t.getIcons1()
+                : t.getIcons1().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(_miscSelected[index], icon)
+                )).values.toList(),
           ));
         }
         if (t.copy || t.paste) {
@@ -2912,7 +3022,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ),
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
-            fillColor: widget.htmlToolbarOptions.buttonFillColor,
+            fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
             focusColor: widget.htmlToolbarOptions.buttonFocusColor,
             highlightColor: widget.htmlToolbarOptions.buttonHighlightColor,
             hoverColor: widget.htmlToolbarOptions.buttonHoverColor,
@@ -2948,7 +3058,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               }
             },
             isSelected: List<bool>.filled(t.getIcons2().length, false),
-            children: t.getIcons2(),
+            children: widget.htmlToolbarOptions.enableCustomizeButtonStyle == false
+                ? t.getIcons2()
+                : t.getIcons2().asMap().map((index, icon) =>
+                MapEntry(index,
+                    _buildCustomizeStyleButton(List<bool>.filled(t.getIcons2().length, false)[index], icon)
+                )).values.toList(),
           ));
         }
       }
@@ -2982,5 +3097,24 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           .toList();
     }
     return toolbarChildren;
+  }
+
+  Widget _buildCustomizeStyleButton(isSelected, Icon icon){
+    return Container(
+      width: widget.htmlToolbarOptions.toolbarItemHeight,
+      height: widget.htmlToolbarOptions.toolbarItemHeight,
+      decoration: BoxDecoration(
+        color: isSelected ? widget.htmlToolbarOptions.buttonFillColor : Colors.transparent,
+        border: isSelected
+            ? Border.all(
+          color: widget.htmlToolbarOptions.buttonSelectedBorderColor ?? Colors.transparent,
+        )
+            : null,
+        borderRadius: widget.htmlToolbarOptions.buttonBorderRadius,
+      ),
+      child: Center(
+        child: icon,
+      ),
+    );
   }
 }

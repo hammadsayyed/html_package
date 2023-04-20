@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -30,6 +31,23 @@ class HtmlEditorExample extends StatefulWidget {
 class _HtmlEditorExampleState extends State<HtmlEditorExample> {
   String result = '';
   final HtmlEditorController controller = HtmlEditorController();
+
+  Widget htmlEditorButton({isSelected = true, required IconData icon, size =30}){
+    return Container(
+      height: size,
+      width: size,
+      // padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color:  isSelected ? Color(0xFFE0E0E0) : Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(child: Icon(icon))
+      // SvgPicture.asset(
+      //   icon,
+      //   color: Color(0xA6000000),
+      // ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +93,24 @@ class _HtmlEditorExampleState extends State<HtmlEditorExample> {
                 ),
                 htmlToolbarOptions: HtmlToolbarOptions(
                   toolbarPosition: ToolbarPosition.aboveEditor, //by default
+                  enableCustomizeButtonStyle: true,
                   toolbarType: ToolbarType.nativeScrollable, //by default
+                  buttonFillColor: Color(0xFFEBEBEB),
+                  buttonSelectedColor: Color(0xA6000000),//#000000A6
+                  buttonColor: Color(0xA6000000),
+                  buttonBorderRadius: BorderRadius.all(Radius.circular(8)),
+                  buttonBorderColor: Colors.brown,
+                  buttonSelectedBorderColor: Color(0x000000A6),
+                  customToolbarButtons: [
+                    // htmlEditorButton(icon: CustomIcons.bold),
+                    htmlEditorButton(icon: Icons.co_present),
+                    // htmlEditorButton(icon: CustomIcons.italic),
+                  ],
+                  // defaultToolbarButtons: [
+                  //   const FontButtons(clearAll: false, subscript: false, superscript: false),
+                  // ],
+                  // renderBorder: ,
+                  buttonHoverColor: Colors.transparent,
                   onButtonPressed:
                       (ButtonType type, bool? status, Function? updateStatus) {
                     print(
@@ -102,65 +137,68 @@ class _HtmlEditorExampleState extends State<HtmlEditorExample> {
                   },
                 ),
                 otherOptions: OtherOptions(height: 550),
-                callbacks: Callbacks(onBeforeCommand: (String? currentHtml) {
-                  print('html before change is $currentHtml');
-                }, onChangeContent: (String? changed) {
-                  print('content changed to $changed');
-                }, onChangeCodeview: (String? changed) {
-                  print('code changed to $changed');
-                }, onChangeSelection: (EditorSettings settings) {
-                  print('parent element is ${settings.parentElement}');
-                  print('font name is ${settings.fontName}');
-                }, onDialogShown: () {
-                  print('dialog shown');
-                }, onEnter: () {
-                  print('enter/return pressed');
-                }, onFocus: () {
-                  print('editor focused');
-                }, onBlur: () {
-                  print('editor unfocused');
-                }, onBlurCodeview: () {
-                  print('codeview either focused or unfocused');
-                }, onInit: () {
-                  print('init');
-                },
-                    //this is commented because it overrides the default Summernote handlers
-                    /*onImageLinkInsert: (String? url) {
-                    print(url ?? "unknown url");
-                  },
-                  onImageUpload: (FileUpload file) async {
-                    print(file.name);
-                    print(file.size);
-                    print(file.type);
-                    print(file.base64);
-                  },*/
-                    onImageUploadError: (FileUpload? file, String? base64Str,
-                        UploadError error) {
-                  print(describeEnum(error));
-                  print(base64Str ?? '');
-                  if (file != null) {
-                    print(file.name);
-                    print(file.size);
-                    print(file.type);
-                  }
-                }, onKeyDown: (int? keyCode) {
-                  print('$keyCode key downed');
-                  print(
-                      'current character count: ${controller.characterCount}');
-                }, onKeyUp: (int? keyCode) {
-                  print('$keyCode key released');
-                }, onMouseDown: () {
-                  print('mouse downed');
-                }, onMouseUp: () {
-                  print('mouse released');
-                }, onNavigationRequestMobile: (String url) {
-                  print(url);
-                  return NavigationActionPolicy.ALLOW;
-                }, onPaste: () {
-                  print('pasted into editor');
-                }, onScroll: () {
+                callbacks: Callbacks(
+              // onBeforeCommand: (String? currentHtml) {
+                //   print('html before change is $currentHtml');
+                // }, onChangeContent: (String? changed) {
+                //   print('content changed to $changed');
+                // }, onChangeCodeview: (String? changed) {
+                //   print('code changed to $changed');
+                // }, onChangeSelection: (EditorSettings settings) {
+                //   print('parent element is ${settings.parentElement}');
+                //   print('font name is ${settings.fontName}');
+                // }, onDialogShown: () {
+                //   print('dialog shown');
+                // }, onEnter: () {
+                //   print('enter/return pressed');
+                // }, onFocus: () {
+                //   print('editor focused');
+                // }, onBlur: () {
+                //   print('editor unfocused');
+                // }, onBlurCodeview: () {
+                //   print('codeview either focused or unfocused');
+                // }, onInit: () {
+                //   print('init');
+                // },
+                //     //this is commented because it overrides the default Summernote handlers
+                //     /*onImageLinkInsert: (String? url) {
+                //     print(url ?? "unknown url");
+                //   },
+                //   onImageUpload: (FileUpload file) async {
+                //     print(file.name);
+                //     print(file.size);
+                //     print(file.type);
+                //     print(file.base64);
+                //   },*/
+                //     onImageUploadError: (FileUpload? file, String? base64Str,
+                //         UploadError error) {
+                //   print(describeEnum(error));
+                //   print(base64Str ?? '');
+                //   if (file != null) {
+                //     print(file.name);
+                //     print(file.size);
+                //     print(file.type);
+                //   }
+                // }, onKeyDown: (int? keyCode) {
+                //   print('$keyCode key downed');
+                //   print(
+                //       'current character count: ${controller.characterCount}');
+                // }, onKeyUp: (int? keyCode) {
+                //   print('$keyCode key released');
+                // }, onMouseDown: () {
+                //   print('mouse downed');
+                // }, onMouseUp: () {
+                //   print('mouse released');
+                // }, onNavigationRequestMobile: (String url) {
+                //   print(url);
+                //   return NavigationActionPolicy.ALLOW;
+                // }, onPaste: () {
+                //   print('pasted into editor');
+                // },
+                onScroll: () {
                   print('editor scrolled');
-                }),
+                }
+                ),
                 plugins: [
                   SummernoteAtMention(
                       getSuggestionsMobile: (String value) {
