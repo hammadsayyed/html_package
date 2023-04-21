@@ -184,13 +184,14 @@ class HtmlToolbarOptions {
     this.renderBorder = false,
     this.textStyle,
     this.separatorWidget =
-        const VerticalDivider(indent: 2, endIndent: 2, color: Colors.grey),
+        const VerticalDivider(indent: 2, endIndent: 2, color: Color(0xFFE0E0E0)),
     this.renderSeparatorWidget = true,
     this.toolbarItemHeight = 36,
     this.gridViewHorizontalSpacing = 5,
     this.gridViewVerticalSpacing = 5,
     this.enableCustomizeButtonStyle = false,
-  });
+    this.customizeButtonStyle,
+  }): assert(!enableCustomizeButtonStyle || customizeButtonStyle != null, 'customizeButtonStyle must not be null when enableCustomizeButtonStyle is true.');
 
   /// Allows you to set the allowed extensions when a user inserts an audio file
   ///
@@ -405,6 +406,7 @@ class HtmlToolbarOptions {
   final BorderRadius? buttonBorderRadius;
   final double? buttonBorderWidth;
   final bool enableCustomizeButtonStyle;
+  final Widget Function(bool, Icon, String)? customizeButtonStyle;
 }
 
 /// Other options such as the height of the widget and the decoration surrounding it

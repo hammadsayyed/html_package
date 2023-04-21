@@ -97,6 +97,8 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
   /// Tracks the expanded status of the toolbar
   bool _isExpanded = false;
 
+  late BoxConstraints? toolbarButtonConstraints;
+
   @override
   void initState() {
     widget.controller.toolbar = this;
@@ -122,6 +124,14 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
         _alignSelected = List<bool>.filled(t.getIcons1().length, false);
       }
     }
+
+    toolbarButtonConstraints = widget.htmlToolbarOptions.enableCustomizeButtonStyle
+        ? BoxConstraints.tightFor(
+      width: widget.htmlToolbarOptions.toolbarItemHeight + 6,
+      height: widget.htmlToolbarOptions.toolbarItemHeight)
+        : BoxConstraints.tightFor(
+      width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
+      height: widget.htmlToolbarOptions.toolbarItemHeight - 2);
     super.initState();
   }
 
@@ -375,8 +385,16 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  children: _buildChildren(),
+                child: CustomScrollView(
+                  scrollDirection: Axis.horizontal,
+                  slivers: [
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Row(
+                        children: _buildChildren(),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -935,10 +953,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
       if (t is FontButtons) {
         if (t.bold || t.italic || t.underline || t.strikethrough) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight + 8,
-              height: widget.htmlToolbarOptions.toolbarItemHeight,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1013,16 +1028,13 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               ? t.getIcons1()
               : t.getIcons1().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(_fontSelected[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(_fontSelected[index], icon, iconNameMap[icon.icon] ?? '')
             )).values.toList(),
           ));
         }
         if (t.superscript || t.subscript) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1070,17 +1082,14 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? t.getIcons2()
                 : t.getIcons2().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(_miscFontSelected[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(_miscFontSelected[index], icon, iconNameMap[icon.icon] ?? '')
                 )).values.toList(),
           ));
         }
       }
       if (t is ColorButtons && (t.foregroundColor || t.highlightColor)) {
         toolbarChildren.add(ToggleButtons(
-          constraints: BoxConstraints.tightFor(
-            width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-          ),
+          constraints: toolbarButtonConstraints,
           color: widget.htmlToolbarOptions.buttonColor,
           selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
           fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1272,17 +1281,14 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               ? t.getIcons()
               : t.getIcons().asMap().map((index, icon) =>
               MapEntry(index,
-                  _buildCustomizeStyleButton(_colorSelected[index], icon)
+                  widget.htmlToolbarOptions.customizeButtonStyle!(_colorSelected[index], icon, iconNameMap[icon.icon] ?? '')
               )).values.toList(),
         ));
       }
       if (t is ListButtons) {
         if (t.ul || t.ol) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1330,7 +1336,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? t.getIcons()
                 : t.getIcons().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(_listSelected[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(_listSelected[index], icon, iconNameMap[icon.icon] ?? '')
                 )).values.toList(),
           ));
         }
@@ -1443,10 +1449,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
       if (t is ParagraphButtons) {
         if (t.alignLeft || t.alignCenter || t.alignRight || t.alignJustify) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1515,16 +1518,13 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? t.getIcons1()
                 : t.getIcons1().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(_alignSelected[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(_alignSelected[index], icon, iconNameMap[icon.icon] ?? '')
                 )).values.toList(),
           ));
         }
         if (t.increaseIndent || t.decreaseIndent) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1562,7 +1562,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? t.getIcons2()
                 : t.getIcons2().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(List<bool>.filled(t.getIcons2().length, false)[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(List<bool>.filled(t.getIcons2().length, false)[index], icon, iconNameMap[icon.icon] ?? '')
                 )).values.toList(),
           ));
         }
@@ -1666,10 +1666,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
         }
         if (t.textDirection) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -1835,10 +1832,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               t.codeview ||
               t.clearAll)) {
         toolbarChildren.add(ToggleButtons(
-          constraints: BoxConstraints.tightFor(
-            width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-          ),
+          constraints: toolbarButtonConstraints,
           color: widget.htmlToolbarOptions.buttonColor,
           selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
           fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -2690,18 +2684,14 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
               ? t.getIcons()
               : t.getIcons().asMap().map((index, icon) =>
               MapEntry(index,
-                  // _buildCustomizeStyleButton(List<bool>.filled(t.getIcons().length, false)[index], icon)
-                  _buildCustomizeStyleButton(_miscInsertSelectableSelected[index], icon)
+                  widget.htmlToolbarOptions.customizeButtonStyle!(_miscInsertSelectableSelected[index], icon, iconNameMap[icon.icon] ?? '')
               )).values.toList(),
         ));
       }
       if (t is OtherButtons) {
         if (t.fullscreen || t.codeview || t.undo || t.redo || t.help) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -3010,16 +3000,13 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? t.getIcons1()
                 : t.getIcons1().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(_miscSelected[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(_miscSelected[index], icon, iconNameMap[icon.icon] ?? '')
                 )).values.toList(),
           ));
         }
         if (t.copy || t.paste) {
           toolbarChildren.add(ToggleButtons(
-            constraints: BoxConstraints.tightFor(
-              width: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-              height: widget.htmlToolbarOptions.toolbarItemHeight - 2,
-            ),
+            constraints: toolbarButtonConstraints,
             color: widget.htmlToolbarOptions.buttonColor,
             selectedColor: widget.htmlToolbarOptions.buttonSelectedColor,
             fillColor: widget.htmlToolbarOptions.enableCustomizeButtonStyle ? Colors.transparent : widget.htmlToolbarOptions.buttonFillColor,
@@ -3062,7 +3049,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 ? t.getIcons2()
                 : t.getIcons2().asMap().map((index, icon) =>
                 MapEntry(index,
-                    _buildCustomizeStyleButton(List<bool>.filled(t.getIcons2().length, false)[index], icon)
+                    widget.htmlToolbarOptions.customizeButtonStyle!(List<bool>.filled(t.getIcons2().length, false)[index], icon, iconNameMap[icon.icon] ?? '')
                 )).values.toList(),
           ));
         }
@@ -3099,22 +3086,25 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
     return toolbarChildren;
   }
 
-  Widget _buildCustomizeStyleButton(isSelected, Icon icon){
-    return Container(
-      width: widget.htmlToolbarOptions.toolbarItemHeight,
-      height: widget.htmlToolbarOptions.toolbarItemHeight,
-      decoration: BoxDecoration(
-        color: isSelected ? widget.htmlToolbarOptions.buttonFillColor : Colors.transparent,
-        border: isSelected
-            ? Border.all(
-          color: widget.htmlToolbarOptions.buttonSelectedBorderColor ?? Colors.transparent,
-        )
-            : null,
-        borderRadius: widget.htmlToolbarOptions.buttonBorderRadius,
-      ),
-      child: Center(
-        child: icon,
-      ),
-    );
-  }
+  Map<IconData, String> iconNameMap = {
+    CustomIcons.bold : 'Bold',
+    CustomIcons.italic : 'Italic',
+    CustomIcons.underline : 'Underline',
+    CustomIcons.strikethrough : 'Strikethrough',
+    CustomIcons.text_color : 'Text Color',
+    Icons.format_color_fill : 'Background Color',
+    CustomIcons.ic_text_align_left : 'Align Left',
+    CustomIcons.ic_text_align_center : 'Align Center',
+    CustomIcons.ic_text_align_right : 'Align Right',
+    CustomIcons.increase_indent : 'Increase Indent',
+    CustomIcons.decrease_indent : 'Decrease Indent',
+    CustomIcons.bulleted_list : 'Bulleted List',
+    CustomIcons.numbered_list : 'Number List',
+    CustomIcons.insert_link : 'Insert Link',
+    CustomIcons.attach_file : 'Attach File',
+    CustomIcons.table : 'Table',
+    CustomIcons.code : 'Code',
+    CustomIcons.remove_formatting : 'Clear Formatting',
+  };
+
 }
