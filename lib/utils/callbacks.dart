@@ -186,5 +186,5 @@ class Callbacks {
   /// Make sure to factor that into your implementation.
   void Function()? onScroll;
   ///for getting deltaY for mouse wheel event
-  void Function(int deltaY)? onWheel;
+  void Function(double deltaY)? onWheel;
 }
