@@ -615,9 +615,7 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
     if (c.onEnter != null) {
       callbacks = callbacks +
           """
-          \$('#summernote-2').on('summernote.enter', function() {
-            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onEnter"}), "*");
-          });\n
+          \$("#summernote-2").on("summernote.enter", function(we, e) { \$(this).summernote("pasteHTML", "<br><br>"); e.preventDefault(); });\n
         """;
     }
     if (c.onFocus != null) {
@@ -692,6 +690,14 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
           });\n
         """;
     }
+    if (c.onWheel != null) {
+      callbacks = callbacks +
+          """
+           \$('#summernote-2').on('summernote.wheel', function(_,e) {
+              window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onWheel","deltaY": e.originalEvent.deltaY}), "*");
+            });\n
+          """;
+    }
     return callbacks;
   }
 
@@ -702,6 +708,9 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
       if (data['type'] != null &&
           data['type'].contains('toDart:') &&
           data['view'] == createdViewId) {
+        if((data['type']).contains('onWheel')){
+          c.onWheel!.call(data['deltaY']);
+        }
         if (data['type'].contains('onBeforeCommand')) {
           c.onBeforeCommand!.call(data['contents']);
         }
@@ -793,6 +802,7 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
         if (data['type'].contains('characterCount')) {
           widget.controller.characterCount = data['totalChars'];
         }
+
       }
     });
   }

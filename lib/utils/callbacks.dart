@@ -25,6 +25,7 @@ class Callbacks {
     this.onNavigationRequestMobile,
     this.onPaste,
     this.onScroll,
+    this.onWheel
   });
 
   /// Called before certain commands are fired and the editor is in rich text view.
@@ -184,4 +185,6 @@ class Callbacks {
   /// Note: This function will be repeatedly called while the editor is scrolled.
   /// Make sure to factor that into your implementation.
   void Function()? onScroll;
+  ///for getting deltaY for mouse wheel event
+  void Function(int deltaY)? onWheel;
 }
