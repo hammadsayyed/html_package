@@ -615,7 +615,9 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
     if (c.onEnter != null) {
       callbacks = callbacks +
           """
-          \$("#summernote-2").on("summernote.enter", function(we, e) { \$(this).summernote("pasteHTML", "<br><br>"); e.preventDefault(); });\n
+          \$('#summernote-2').on('summernote.enter', function() {
+            window.parent.postMessage(JSON.stringify({"view": "$createdViewId", "type": "toDart: onEnter"}), "*");
+          });\n
         """;
     }
     if (c.onFocus != null) {
