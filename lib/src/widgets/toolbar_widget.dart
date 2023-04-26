@@ -1172,6 +1172,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 }
                 await showDialog(
                     context: context,
+                    barrierColor: Colors.transparent,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
                         child: AlertDialog(
@@ -1208,7 +1209,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              child: Text('Cancel'),
+                              child: Text('Cancel', style: TextStyle(color: Color(0xFF1E7B74))),
                             ),
                             TextButton(
                                 onPressed: () {
@@ -1236,7 +1237,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                   }
                                   Navigator.of(context).pop();
                                 },
-                                child: Text('Reset to default color')),
+                                child: Text('Reset to default color', style: TextStyle(color: Color(0xFF1E7B74)))),
                             TextButton(
                               onPressed: () {
                                 if (t.getIcons()[index].icon ==
@@ -1267,9 +1268,11 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                 });
                                 Navigator.of(context).pop();
                               },
-                              child: Text('Set color'),
+                              child: Text('Set color', style: TextStyle(color: Color(0xFF1E7B74))),
                             )
                           ],
+                          actionsAlignment: MainAxisAlignment.spaceBetween,
+                          actionsPadding: EdgeInsets.only(left: 40, right: 40, bottom: 10),
                         ),
                       );
                     });
