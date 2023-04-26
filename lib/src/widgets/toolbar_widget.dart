@@ -1865,6 +1865,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 final formKey = GlobalKey<FormState>();
                 var openNewTab = false;
                 await showDialog(
+                  barrierColor: Colors.transparent,
                     context: context,
                     builder: (BuildContext context) {
                       return PointerInterceptor(
