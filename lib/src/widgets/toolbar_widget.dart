@@ -214,6 +214,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
     } else {
       setState(mounted, this.setState, () {
         _backColorSelected = Colors.yellow;
+        _colorSelected[1] = false;
       });
     }
     //check the list style if it matches one of the predetermined styles and update the toolbar
