@@ -93,7 +93,7 @@ class _HtmlEditorExampleState extends State<HtmlEditorExample> {
                 ),
                 htmlToolbarOptions: HtmlToolbarOptions(
                   toolbarPosition: ToolbarPosition.aboveEditor, //by default
-                  enableCustomizeButtonStyle: true,
+                  // enableCustomizeButtonStyle: true,
                   toolbarType: ToolbarType.nativeLinear, //by default
                   buttonFillColor: Color(0xFFEBEBEB),
                   buttonSelectedColor: Color(0xA6000000),//#000000A6

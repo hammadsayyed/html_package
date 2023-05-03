@@ -208,8 +208,12 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
     }
     if (colorList[1] != null && colorList[1]!.isNotEmpty) {
       setState(mounted, this.setState, () {
-        _backColorSelected =
-            Color(int.parse(colorList[1]!, radix: 16) + 0xFF000000);
+        var rgb = colorList[1]!.replaceAll('rgb(', '').replaceAll(')', '');
+        var rgbList = rgb.split(', ');
+        _backColorSelected = Color.fromRGBO(int.parse(rgbList[0]),
+            int.parse(rgbList[1]), int.parse(rgbList[2]), 1);
+        // _backColorSelected =
+        //     Color(int.parse(colorList[1]!, radix: 16) + 0xFF000000);
       });
     } else {
       setState(mounted, this.setState, () {

@@ -422,7 +422,7 @@ class _HtmlEditorWidgetWebState extends State<HtmlEditorWidget> {
             parent = document.queryCommandValue('formatBlock');
             fontSize = document.queryCommandValue('fontSize');
             foreColor = document.queryCommandValue('foreColor');
-            backColor = document.queryCommandValue('hiliteColor');
+            backColor = document.queryCommandValue('backColor');
             fontName = document.queryCommandValue('fontName');
           }
           var message = {
