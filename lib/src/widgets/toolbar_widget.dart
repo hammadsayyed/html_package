@@ -1872,135 +1872,261 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 final urlFocus = FocusNode();
                 final formKey = GlobalKey<FormState>();
                 var openNewTab = false;
-                await showDialog(
-                  barrierColor: Colors.transparent,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return PointerInterceptor(
-                        child: StatefulBuilder(builder:
-                            (BuildContext context, StateSetter setState) {
-                          return AlertDialog(
-                            title: Text('Insert Link'),
-                            scrollable: true,
-                            content: Form(
-                              key: formKey,
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Text to display',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    SizedBox(height: 10),
-                                    TextField(
-                                      controller: text,
-                                      focusNode: textFocus,
-                                      textInputAction: TextInputAction.next,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        hintText: 'Text',
-                                      ),
-                                      onSubmitted: (_) {
-                                        urlFocus.requestFocus();
-                                      },
-                                    ),
-                                    SizedBox(height: 20),
-                                    Text('URL',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    SizedBox(height: 10),
-                                    TextFormField(
-                                      controller: url,
-                                      focusNode: urlFocus,
-                                      textInputAction: TextInputAction.done,
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        hintText: 'URL',
-                                      ),
-                                      validator: (String? value) {
-                                        if (value == null || value.isEmpty) {
-                                          return 'Please enter a URL!';
-                                        }
-                                        return null;
-                                      },
-                                    ),
-                                    Row(
-                                      children: <Widget>[
-                                        SizedBox(
-                                          height: 48.0,
-                                          width: 24.0,
-                                          child: Checkbox(
-                                            value: openNewTab,
-                                            activeColor: Color(0xFF827250),
-                                            onChanged: (bool? value) {
-                                              setState(() {
-                                                openNewTab = value!;
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Theme.of(context)
-                                                  .dialogBackgroundColor,
-                                              padding: EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              elevation: 0.0),
-                                          onPressed: () {
-                                            setState(() {
-                                              openNewTab = !openNewTab;
-                                            });
-                                          },
-                                          child: Text('Open in new window',
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyText1
-                                                      ?.color)),
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
+                showOverlay(context, PointerInterceptor(
+                  child: StatefulBuilder(builder:
+                      (BuildContext context, StateSetter setState) {
+                    return AlertDialog(
+                      title: Text('Insert Link'),
+                      scrollable: true,
+                      content: Form(
+                        key: formKey,
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Text to display',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              TextField(
+                                controller: text,
+                                focusNode: textFocus,
+                                textInputAction: TextInputAction.next,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'Text',
+                                ),
+                                onSubmitted: (_) {
+                                  urlFocus.requestFocus();
                                 },
-                                child: Text('Cancel'),
                               ),
-                              TextButton(
-                                onPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    var proceed = await widget
-                                            .htmlToolbarOptions
-                                            .linkInsertInterceptor
-                                            ?.call(
-                                                text.text.isEmpty
-                                                    ? url.text
-                                                    : text.text,
-                                                url.text,
-                                                openNewTab) ??
-                                        true;
-                                    if (proceed) {
-                                      widget.controller.insertLink(
-                                        text.text.isEmpty
-                                            ? url.text
-                                            : text.text,
-                                        url.text,
-                                        openNewTab,
-                                      );
-                                    }
-                                    Navigator.of(context).pop();
+                              SizedBox(height: 20),
+                              Text('URL',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              TextFormField(
+                                controller: url,
+                                focusNode: urlFocus,
+                                textInputAction: TextInputAction.done,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'URL',
+                                ),
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a URL!';
                                   }
+                                  return null;
                                 },
-                                child: Text('OK'),
-                              )
-                            ],
-                          );
-                        }),
-                      );
-                    });
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 48.0,
+                                    width: 24.0,
+                                    child: Checkbox(
+                                      value: openNewTab,
+                                      activeColor: Color(0xFF827250),
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          openNewTab = value!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Theme.of(context)
+                                            .dialogBackgroundColor,
+                                        padding: EdgeInsets.only(
+                                            left: 5, right: 5),
+                                        elevation: 0.0),
+                                    onPressed: () {
+                                      setState(() {
+                                        openNewTab = !openNewTab;
+                                      });
+                                    },
+                                    child: Text('Open in new window',
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                ?.color)),
+                                  ),
+                                ],
+                              ),
+                            ]),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            // Navigator.of(context).pop();
+                            closeOverlay();
+                          },
+                          child: Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              var proceed = await widget
+                                  .htmlToolbarOptions
+                                  .linkInsertInterceptor
+                                  ?.call(
+                                  text.text.isEmpty
+                                      ? url.text
+                                      : text.text,
+                                  url.text,
+                                  openNewTab) ??
+                                  true;
+                              if (proceed) {
+                                widget.controller.insertLink(
+                                  text.text.isEmpty
+                                      ? url.text
+                                      : text.text,
+                                  url.text,
+                                  openNewTab,
+                                );
+                              }
+                              // Navigator.of(context).pop();
+                              closeOverlay();
+                            }
+                          },
+                          child: Text('OK'),
+                        )
+                      ],
+                    );
+                  }),
+                ));
+                // await showDialog(
+                //   barrierColor: Colors.transparent,
+                //     context: context,
+                //     builder: (BuildContext context) {
+                //       return PointerInterceptor(
+                //         child: StatefulBuilder(builder:
+                //             (BuildContext context, StateSetter setState) {
+                //           return AlertDialog(
+                //             title: Text('Insert Link'),
+                //             scrollable: true,
+                //             content: Form(
+                //               key: formKey,
+                //               child: Column(
+                //                   mainAxisSize: MainAxisSize.min,
+                //                   crossAxisAlignment: CrossAxisAlignment.start,
+                //                   children: [
+                //                     Text('Text to display',
+                //                         style: TextStyle(
+                //                             fontWeight: FontWeight.bold)),
+                //                     SizedBox(height: 10),
+                //                     TextField(
+                //                       controller: text,
+                //                       focusNode: textFocus,
+                //                       textInputAction: TextInputAction.next,
+                //                       decoration: InputDecoration(
+                //                         border: OutlineInputBorder(),
+                //                         hintText: 'Text',
+                //                       ),
+                //                       onSubmitted: (_) {
+                //                         urlFocus.requestFocus();
+                //                       },
+                //                     ),
+                //                     SizedBox(height: 20),
+                //                     Text('URL',
+                //                         style: TextStyle(
+                //                             fontWeight: FontWeight.bold)),
+                //                     SizedBox(height: 10),
+                //                     TextFormField(
+                //                       controller: url,
+                //                       focusNode: urlFocus,
+                //                       textInputAction: TextInputAction.done,
+                //                       decoration: InputDecoration(
+                //                         border: OutlineInputBorder(),
+                //                         hintText: 'URL',
+                //                       ),
+                //                       validator: (String? value) {
+                //                         if (value == null || value.isEmpty) {
+                //                           return 'Please enter a URL!';
+                //                         }
+                //                         return null;
+                //                       },
+                //                     ),
+                //                     Row(
+                //                       children: <Widget>[
+                //                         SizedBox(
+                //                           height: 48.0,
+                //                           width: 24.0,
+                //                           child: Checkbox(
+                //                             value: openNewTab,
+                //                             activeColor: Color(0xFF827250),
+                //                             onChanged: (bool? value) {
+                //                               setState(() {
+                //                                 openNewTab = value!;
+                //                               });
+                //                             },
+                //                           ),
+                //                         ),
+                //                         ElevatedButton(
+                //                           style: ElevatedButton.styleFrom(
+                //                               primary: Theme.of(context)
+                //                                   .dialogBackgroundColor,
+                //                               padding: EdgeInsets.only(
+                //                                   left: 5, right: 5),
+                //                               elevation: 0.0),
+                //                           onPressed: () {
+                //                             setState(() {
+                //                               openNewTab = !openNewTab;
+                //                             });
+                //                           },
+                //                           child: Text('Open in new window',
+                //                               style: TextStyle(
+                //                                   color: Theme.of(context)
+                //                                       .textTheme
+                //                                       .bodyText1
+                //                                       ?.color)),
+                //                         ),
+                //                       ],
+                //                     ),
+                //                   ]),
+                //             ),
+                //             actions: [
+                //               TextButton(
+                //                 onPressed: () {
+                //                   Navigator.of(context).pop();
+                //                 },
+                //                 child: Text('Cancel'),
+                //               ),
+                //               TextButton(
+                //                 onPressed: () async {
+                //                   if (formKey.currentState!.validate()) {
+                //                     var proceed = await widget
+                //                             .htmlToolbarOptions
+                //                             .linkInsertInterceptor
+                //                             ?.call(
+                //                                 text.text.isEmpty
+                //                                     ? url.text
+                //                                     : text.text,
+                //                                 url.text,
+                //                                 openNewTab) ??
+                //                         true;
+                //                     if (proceed) {
+                //                       widget.controller.insertLink(
+                //                         text.text.isEmpty
+                //                             ? url.text
+                //                             : text.text,
+                //                         url.text,
+                //                         openNewTab,
+                //                       );
+                //                     }
+                //                     Navigator.of(context).pop();
+                //                   }
+                //                 },
+                //                 child: Text('OK'),
+                //               )
+                //             ],
+                //           );
+                //         }),
+                //       );
+                //     });
               }
             }
             if (t.getIcons()[index].icon == Icons.image_outlined) {
@@ -3093,6 +3219,36 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
           .toList();
     }
     return toolbarChildren;
+  }
+
+  OverlayEntry? overlayEntry;
+  void showOverlay(BuildContext context, Widget child) {
+
+    // Create an OverlayEntry to hold the widget
+    overlayEntry = OverlayEntry(
+        builder: (BuildContext context) {
+          return Stack(
+            children: [
+              Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: (){
+                      closeOverlay();
+                    },
+                    child: child,
+                  )),
+            ],
+          );
+        });
+    Overlay.of(context).insert(overlayEntry!);
+  }
+
+  void closeOverlay(){
+    overlayEntry?.remove();
+    overlayEntry = null;
   }
 
   Map<IconData, String> iconNameMap = {
