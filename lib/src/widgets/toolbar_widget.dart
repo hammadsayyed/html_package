@@ -3243,7 +3243,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             ],
           );
         });
-    Overlay.of(context).insert(overlayEntry!);
+    Overlay.of(context)?.insert(overlayEntry!);
   }
 
   void closeOverlay(){
