@@ -364,7 +364,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             opacity: _enabled ? 1 : 0.5,
             child: Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+                border: widget.htmlToolbarOptions.toolbarBorder
               ),
               padding: const EdgeInsets.all(5.0),
               child: Wrap(
@@ -386,7 +386,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             child: Container(
               height: widget.htmlToolbarOptions.toolbarItemHeight + 15,
               decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+                  border: widget.htmlToolbarOptions.toolbarBorder
               ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -417,7 +417,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             child: Container(
               height: widget.htmlToolbarOptions.toolbarItemHeight + 15,
               decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+                  border: widget.htmlToolbarOptions.toolbarBorder
               ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -447,7 +447,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
             opacity: _enabled ? 1 : 0.5,
             child: Container(
               decoration: BoxDecoration(
-                  border: Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0)))
+                  border: widget.htmlToolbarOptions.toolbarBorder
               ),
               constraints: BoxConstraints(
                 maxHeight: _isExpanded

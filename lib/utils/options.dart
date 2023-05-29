@@ -191,6 +191,7 @@ class HtmlToolbarOptions {
     this.gridViewVerticalSpacing = 5,
     this.enableCustomizeButtonStyle = false,
     this.customizeButtonStyle,
+    this.toolbarBorder = const Border(bottom: BorderSide(width: 1, color: Color(0xFFE0E0E0))),
   }): assert(!enableCustomizeButtonStyle || customizeButtonStyle != null, 'customizeButtonStyle must not be null when enableCustomizeButtonStyle is true.');
 
   /// Allows you to set the allowed extensions when a user inserts an audio file
@@ -390,6 +391,7 @@ class HtmlToolbarOptions {
   final DropdownMenuDirection? dropdownMenuDirection;
   final double? dropdownMenuMaxHeight;
   final BoxDecoration? dropdownBoxDecoration;
+  final BoxBorder? toolbarBorder;
 
   /// Styling options that only apply to the buttons:
   /// (See the [ToggleButtons] class for more information)
